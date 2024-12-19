@@ -12,4 +12,4 @@ app.use(cors())
 
 export default app.get("/",(req:Request, res:Response)=>{
     res.send("Blog Management is running 🏃🏼‍♂️‍➡️")
-})
+})  
