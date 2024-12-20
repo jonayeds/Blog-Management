@@ -6,6 +6,12 @@ const createBlogIntoDB = async(payload:IBlog)=>{
     return result 
 }
 
+const getAllBlogsFromDB = async(query:Record<string, unknown>)=>{
+    const result = await Blog.find().populate("author")
+    return result
+}
+
 export const BlogServices = {
-    createBlogIntoDB
+    createBlogIntoDB,
+    getAllBlogsFromDB
 }
