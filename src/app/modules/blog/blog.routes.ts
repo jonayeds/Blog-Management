@@ -7,5 +7,7 @@ const router = express.Router()
 
 router.post("/create-blog", requestValidator(BlogValidations.createBlogValidationSchema), BlogControllers.createBlog)
 router.get("/", BlogControllers.getAllBlogs)
+router.patch("/:id", requestValidator(BlogValidations.updateBlogValidationSchema), BlogControllers.updateABlog)
+router.delete("/:id", BlogControllers.deleteABlog)
 
 export const BlogRoutes = router
