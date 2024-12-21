@@ -1,10 +1,10 @@
 import { model, Schema } from "mongoose";
-import { IUser } from "./user.interface";
+import { IUser, UserModel } from "./user.interface";
 import { UserRole } from "./user.constant";
 import bcrypt from "bcrypt"
 import config from "../../config";
 
-const userSchema =new Schema<IUser>({
+const userSchema =new Schema<IUser, UserModel>({
     name:{
         type:String,
         required:true,
@@ -35,4 +35,19 @@ userSchema.pre("save", async function(next){
     next()
 })
 
-export const User = model<IUser>("User", userSchema)
+// clearing password field after saving data into DB
+userSchema.post("save", function(doc, next){
+    doc.password = ""
+    next()
+})
+
+// statics
+userSchema.statics.isUserExists = async function (email:string) {
+    return await User.findOne({email})
+}
+
+userSchema.statics.isPasswordCorrect = async function (plainPassword, hashedPassword) {
+    return await bcrypt.compare(plainPassword, hashedPassword)
+}
+
+export const User = model<IUser, UserModel>("User", userSchema)
