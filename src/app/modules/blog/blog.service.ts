@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryBuilder } from "../../builder/queryBuilder";
+import { User } from "../user/user.model";
 import { IBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
+import { Types } from "mongoose";
 
 const createBlogIntoDB = async(payload:IBlog)=>{
+    const blogObj:Record<string, any> = payload
+    const userEmail = blogObj.user.email
+    const author = await User.findOne({email:userEmail})
+    payload.author = author?._id as Types.ObjectId
+
     const result  = await Blog.create(payload)
-    return result 
+    return result
 }
 
 const getAllBlogsFromDB = async(query:Record<string, unknown>)=>{

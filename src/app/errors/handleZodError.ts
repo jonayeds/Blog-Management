@@ -1,5 +1,5 @@
 import { ZodError, ZodIssue } from "zod"
-import { TErrorSource } from "../interfaces/error"
+import { TErrorSource } from "../interface/error"
 
 export const handleZodError = (error:ZodError)=>{
     const statusCode = 400
