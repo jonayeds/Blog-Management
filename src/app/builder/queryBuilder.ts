@@ -21,16 +21,16 @@ export class QueryBuilder<T> {
 
     filter(){
         const queryObj = {...this.query}
-        const excludeFields = ["searchTerm", "sort", "limit","page", "fields"]
+        const excludeFields = ["searchTerm", "sort", "limit","page", "fields", "sortOrder"]
         excludeFields.forEach(field=>delete queryObj[field])
         this.modelQuery = this.modelQuery.find(queryObj)
         return this
     }
 
     sort(){
-        const sort = (this?.query?.sort as string).split(",").join(" ") || "-createdAt" 
+        let sort = (this?.query?.sort as string).split(",").join(" ") || "createdAt" 
+        sort = `${this?.query?.sortOrder === 'desc' ? "-": ""}${sort}`
         this.modelQuery = this.modelQuery.sort(sort as string)
-        console.log(sort)
         return this
     }
 
