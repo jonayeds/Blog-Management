@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-app.use("/api", router)
+app.use('/api', router);
 
 // Test route
 export default app.get('/', (req: Request, res: Response) => {
@@ -19,8 +19,7 @@ export default app.get('/', (req: Request, res: Response) => {
 });
 
 // Global Error Handler
-app.use(globalErrorHandler)
-
+app.use(globalErrorHandler);
 
 // Not Found Route
-app.use(notFound)
+app.use(notFound);
