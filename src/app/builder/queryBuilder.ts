@@ -21,9 +21,12 @@ export class QueryBuilder<T> {
 
     filter(){
         const queryObj = {...this.query}
-        const excludeFields = ["searchTerm", "sort", "limit","page", "fields", "sortOrder"]
+        if(queryObj.filter){
+            queryObj.author = queryObj.filter
+        }
+        const excludeFields = ["searchTerm", "sort", "limit","page", "fields", "sortOrder","filter"]
         excludeFields.forEach(field=>delete queryObj[field])
-        this.modelQuery = this.modelQuery.find(queryObj)
+        this.modelQuery = this.modelQuery.find({...queryObj})
         return this
     }
 

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { JwtPayload } from "jsonwebtoken";
 import { QueryBuilder } from "../../builder/queryBuilder";
 import { User } from "../user/user.model";
 import { IBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
 import { Types } from "mongoose";
+import { AppError } from "../../errors/appError";
 
 const createBlogIntoDB = async(payload:IBlog)=>{
     const blogObj:Record<string, any> = payload
@@ -27,14 +29,36 @@ const getAllBlogsFromDB = async(query:Record<string, unknown>)=>{
     return result
 }
 
-const updateBlog = async(payload:Partial<IBlog>, id:string) =>{
-    const result = await Blog.findByIdAndUpdate(id,payload, {new:true, runValidators:true})
+const updateBlog = async(payload:Partial<IBlog>, id:string, currentUser:JwtPayload) =>{
+    const isBlogExist = await Blog.findById(id)
+    if(!isBlogExist){
+        throw new AppError(404,"Blog not found")
+    }
+    const author = await User.findById(isBlogExist.author)
+    if(author?.email !== currentUser.email){
+        throw new AppError(403, "You are not authorized to update blog")
+    }
+
+    const result = await Blog.findByIdAndUpdate(id,{content :payload.content, title:payload.title}, {new:true, runValidators:true})
     return result
 }
 
-const deleteBlogFromDB = async(id:string) =>{
+const deleteBlogFromDB = async(id:string, currentUser: JwtPayload) =>{
+    const isBlogExist = await Blog.findById(id)
+    if(!isBlogExist){
+        throw new AppError(404,"Blog not found")
+    }
+    const author = await User.findById(isBlogExist.author)
+    if(currentUser.role !== "admin" &&
+        author?.email !== currentUser.email
+
+    ){
+        throw new AppError(403, "You are not Authorized to delete the blog")
+    }
+
     const result = await Blog.findByIdAndDelete(id)
     return result
+
 }
 
 export const BlogServices = {
