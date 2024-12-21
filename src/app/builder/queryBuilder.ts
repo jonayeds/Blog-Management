@@ -31,7 +31,7 @@ export class QueryBuilder<T> {
     }
 
     sort(){
-        let sort = (this?.query?.sort as string).split(",").join(" ") || "createdAt" 
+        let sort = (this?.query?.sort as string)?.split(",").join(" ") || "createdAt" 
         sort = `${this?.query?.sortOrder === 'desc' ? "-": ""}${sort}`
         this.modelQuery = this.modelQuery.sort(sort as string)
         return this
